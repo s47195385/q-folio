@@ -34,9 +34,10 @@ try:
     from cuopt.linear_programming.solver_settings import SolverSettings
 
     _CUOPT_AVAILABLE = True
+    _CUOPT_IMPORT_ERROR = None
 except ImportError:
-    CONTINUOUS = INTEGER = MAXIMIZE = MINIMIZE = Problem = SolverSettings = None
     _CUOPT_AVAILABLE = False
+    _CUOPT_IMPORT_ERROR = "cuOpt Python package is not installed."
 
 from . import base_optimizer, cvar_utils
 from .cvar_parameters import CvarParameters
@@ -565,6 +566,12 @@ class CVaR(base_optimizer.BaseOptimizer):
         timing_dict : dict
             Timing information for each setup loop in seconds
         """
+        if not _CUOPT_AVAILABLE:
+            raise RuntimeError(
+                "cuOpt backend requested but cuOpt is unavailable. "
+                f"Import detail: {_CUOPT_IMPORT_ERROR}"
+            )
+
         num_assets = self.n_assets
         num_scen = len(self.data.p)
 
@@ -883,6 +890,12 @@ class CVaR(base_optimizer.BaseOptimizer):
         cash : float
             Optimal cash allocation
         """
+        if not _CUOPT_AVAILABLE:
+            raise RuntimeError(
+                "cuOpt backend requested but cuOpt is unavailable. "
+                f"Import detail: {_CUOPT_IMPORT_ERROR}"
+            )
+
         # Configure solver settings
         settings = SolverSettings()
         if solver_settings:
@@ -961,9 +974,10 @@ class CVaR(base_optimizer.BaseOptimizer):
         self.optimization_problem.solve(**solver_settings)
         weights = self.w.value
         cash_value = self.c.value
+        cash_array = np.asarray(cash_value)
         cash = (
-            float(np.asarray(cash_value).reshape(-1)[0])
-            if np.asarray(cash_value).size > 0
+            float(cash_array.reshape(-1)[0])
+            if cash_array.size > 0
             else 0.0
         )
 

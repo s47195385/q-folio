@@ -1,19 +1,19 @@
 {
-  "data_info":{
-    "dataset_path":"\/home\/runner\/work\/q-folio\/q-folio\/data\/stock_data\/sp500_4y_demo.csv",
-    "source":"synthetic_factor_model",
-    "rows":1044,
-    "columns":50,
-    "start":"2022-03-30",
-    "end":"2026-03-30",
-    "fallback_reason":null
+  "data_info": {
+    "dataset_path": "/home/runner/work/q-folio/q-folio/data/stock_data/sp500_4y_demo.csv",
+    "source": "synthetic_factor_model",
+    "rows": 1044,
+    "columns": 50,
+    "start": "2022-03-30",
+    "end": "2026-03-30",
+    "fallback_reason": null
   },
-  "backend":"cpu-cvxpy",
-  "optimizer_api":"cvxpy",
-  "kde_device":"CPU",
-  "period_start":"2022-03-30",
-  "period_end":"2026-03-30",
-  "tickers_selected":[
+  "backend": "cpu-cvxpy",
+  "optimizer_api": "cvxpy",
+  "kde_device": "CPU",
+  "period_start": "2022-03-30",
+  "period_end": "2026-03-30",
+  "tickers_selected": [
     "SYN_029",
     "SYN_000",
     "SYN_023",
@@ -40,23 +40,21 @@
     "SYN_025",
     "SYN_004"
   ],
-  "tickers_count":25,
-  "active_positions":8,
-  "requested_max_assets":25,
-  "metrics":{
-    "objective":-0.0001310571,
-    "expected_return":0.0003896777,
-    "cvar":0.042138912,
-    "sharpe":-31.4151032011,
-    "sortino":-33.7945392563,
-    "max_drawdown":0.217835576,
-    "total_return":0.5166713504
+  "tickers_count": 25,
+  "active_positions": 8,
+  "requested_max_assets": 25,
+  "metrics": {
+    "objective": -0.000123109055795804,
+    "expected_return": 0.0003938462577534277,
+    "cvar": 0.043432827897414476,
+    "sharpe": -31.105107254805162,
+    "sortino": -33.312375395131305,
+    "max_drawdown": 0.21810126177807215,
+    "total_return": 0.5246209300702447
   },
-  "timing_seconds":{
-    "solve_seconds":0.033180267,
-    "total_demo_seconds":1.445163617
+  "timing_seconds": {
+    "solve_seconds": 0.0328660159999572,
+    "total_demo_seconds": 1.4883758060000218
   },
-  "warnings_or_bugs":[
-
-  ]
+  "warnings_or_bugs": []
 }

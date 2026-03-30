@@ -8,6 +8,7 @@ This module provides:
 
 import os
 import time
+import json
 from dataclasses import dataclass
 
 import cvxpy as cp
@@ -17,7 +18,9 @@ import pandas as pd
 from . import backtest, cvar_utils, utils
 from .cvar_optimizer import CVaR
 from .cvar_parameters import CvarParameters
-from .portfolio import Portfolio
+
+DEFAULT_MAX_AVG_ABS_CORR = 0.35
+EPSILON_CUMULATIVE_RETURN = 1e-12
 
 
 @dataclass
@@ -209,6 +212,7 @@ def _select_momentum_uncorrelated_universe(
     corr_lookback_days: int = 126,
     preselect_top_n: int = 100,
     target_n: int = 25,
+    max_avg_abs_corr: float = DEFAULT_MAX_AVG_ABS_CORR,
 ) -> list[str]:
     """
     Build a momentum-ranked, low-correlation universe via greedy diversification.
@@ -237,8 +241,9 @@ def _select_momentum_uncorrelated_universe(
         if not selected:
             selected.append(ticker)
             continue
+        # Correlation gate to balance momentum concentration with diversification.
         avg_abs_corr = corr_matrix.loc[ticker, selected].abs().mean()
-        if avg_abs_corr <= 0.35:
+        if avg_abs_corr <= max_avg_abs_corr:
             selected.append(ticker)
 
     if len(selected) < target_n:
@@ -285,6 +290,7 @@ def run_mac_compatible_demo(
         sample_prices,
         as_of_date=sample_prices.index.max(),
         target_n=min(max_assets, sample_prices.shape[1]),
+        max_avg_abs_corr=DEFAULT_MAX_AVG_ABS_CORR,
     )
     sample_prices = sample_prices[selected].dropna()
 
@@ -358,7 +364,14 @@ def run_mac_compatible_demo(
     )
     bt_result = bt.backtest_single_portfolio(optimal_portfolio).iloc[0]
     cumulative = bt_result["cumulative returns"]
-    total_return = float(cumulative[-1] / cumulative[0] - 1)
+    start_cumulative = float(cumulative[0])
+    if abs(start_cumulative) < EPSILON_CUMULATIVE_RETURN:
+        warnings.append(
+            "Backtest cumulative-returns start value is ~0; total_return set to NaN."
+        )
+        total_return = float("nan")
+    else:
+        total_return = float(cumulative[-1] / start_cumulative - 1)
 
     active_positions = int(np.sum(np.abs(optimal_portfolio.weights) > 1e-6))
     if active_positions > max_assets:
@@ -395,6 +408,7 @@ def run_mac_compatible_demo(
 
     output_path = os.path.join(output_dir, "mac_gpu_demo_report.json")
     os.makedirs(output_dir, exist_ok=True)
-    pd.Series(report).to_json(output_path, indent=2)
+    with open(output_path, "w", encoding="utf-8") as fh:
+        json.dump(report, fh, indent=2)
     report["report_path"] = output_path
     return report
