@@ -9,13 +9,11 @@ import argparse
 import json
 import os
 
-from src.snp500_rotation import (
-    RotationConfig,
-    build_sp500_data,
-    generate_live_recommendation,
-    run_live_loop,
-    run_rotation_backtest,
-)
+from src.snp500_rotation import RotationConfig
+from src.snp500_rotation import build_sp500_data
+from src.snp500_rotation import generate_live_recommendation
+from src.snp500_rotation import run_live_loop
+from src.snp500_rotation import run_rotation_backtest
 
 
 def parse_args() -> argparse.Namespace:
@@ -48,6 +46,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--min-hold-days", type=int, default=30)
     parser.add_argument("--refresh-hours", type=int, default=4)
     parser.add_argument(
+        "--force-refresh-data",
+        action="store_true",
+        help="Force redownload/regeneration of source dataset.",
+    )
+    parser.add_argument(
         "--mode",
         choices=["backtest", "recommend-once", "recommend-loop", "all"],
         default="all",
@@ -67,7 +70,11 @@ def main():
         refresh_interval_hours=args.refresh_hours,
     )
 
-    data_info = build_sp500_data(output_csv=args.data_csv, years=cfg.years)
+    data_info = build_sp500_data(
+        output_csv=args.data_csv,
+        years=cfg.years,
+        force_refresh=args.force_refresh_data,
+    )
     print(json.dumps({"data_info": data_info}, indent=2))
 
     if args.mode in {"backtest", "all"}:

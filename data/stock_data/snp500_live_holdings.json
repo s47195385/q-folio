@@ -1,0 +1,187 @@
+{
+  "as_of": "2026-03-30",
+  "holdings": [
+    "SYN_199",
+    "SYN_249",
+    "SYN_419",
+    "SYN_061",
+    "SYN_324",
+    "SYN_196",
+    "SYN_348",
+    "SYN_444",
+    "SYN_392",
+    "SYN_325",
+    "SYN_070",
+    "SYN_195",
+    "SYN_022",
+    "SYN_457",
+    "SYN_116",
+    "SYN_224",
+    "SYN_083",
+    "SYN_495",
+    "SYN_064",
+    "SYN_458",
+    "SYN_142",
+    "SYN_220",
+    "SYN_273",
+    "SYN_033",
+    "SYN_181",
+    "SYN_067",
+    "SYN_197",
+    "SYN_471",
+    "SYN_475",
+    "SYN_208"
+  ],
+  "entry_state": {
+    "SYN_199": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.5429498845427201,
+      "peak_momentum": 0.5429498845427201
+    },
+    "SYN_249": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.49499475429195616,
+      "peak_momentum": 0.49499475429195616
+    },
+    "SYN_419": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.4857919766056078,
+      "peak_momentum": 0.4857919766056078
+    },
+    "SYN_061": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.48051556396527584,
+      "peak_momentum": 0.48051556396527584
+    },
+    "SYN_324": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.4793108560464865,
+      "peak_momentum": 0.4793108560464865
+    },
+    "SYN_196": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.4645954239424537,
+      "peak_momentum": 0.4645954239424537
+    },
+    "SYN_348": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.4640185729172064,
+      "peak_momentum": 0.4640185729172064
+    },
+    "SYN_444": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.4622239330643594,
+      "peak_momentum": 0.4622239330643594
+    },
+    "SYN_392": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.4485988634670228,
+      "peak_momentum": 0.4485988634670228
+    },
+    "SYN_325": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.4479184883163718,
+      "peak_momentum": 0.4479184883163718
+    },
+    "SYN_070": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.4364123879527364,
+      "peak_momentum": 0.4364123879527364
+    },
+    "SYN_195": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.4178261425322498,
+      "peak_momentum": 0.4178261425322498
+    },
+    "SYN_022": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.41459744183739833,
+      "peak_momentum": 0.41459744183739833
+    },
+    "SYN_457": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.4073947247588334,
+      "peak_momentum": 0.4073947247588334
+    },
+    "SYN_116": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.4061196309567885,
+      "peak_momentum": 0.4061196309567885
+    },
+    "SYN_224": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.38466854799273253,
+      "peak_momentum": 0.38466854799273253
+    },
+    "SYN_083": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.3797757110210389,
+      "peak_momentum": 0.3797757110210389
+    },
+    "SYN_495": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.37790732697347806,
+      "peak_momentum": 0.37790732697347806
+    },
+    "SYN_064": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.37597048880055883,
+      "peak_momentum": 0.37597048880055883
+    },
+    "SYN_458": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.3663931917071013,
+      "peak_momentum": 0.3663931917071013
+    },
+    "SYN_142": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.36620706598410724,
+      "peak_momentum": 0.36620706598410724
+    },
+    "SYN_220": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.3652246231093814,
+      "peak_momentum": 0.3652246231093814
+    },
+    "SYN_273": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.36141875767291154,
+      "peak_momentum": 0.36141875767291154
+    },
+    "SYN_033": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.35642452344976494,
+      "peak_momentum": 0.35642452344976494
+    },
+    "SYN_181": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.35581514190089436,
+      "peak_momentum": 0.35581514190089436
+    },
+    "SYN_067": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.3536091748737489,
+      "peak_momentum": 0.3536091748737489
+    },
+    "SYN_197": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.35354947420103766,
+      "peak_momentum": 0.35354947420103766
+    },
+    "SYN_471": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.3515527731971093,
+      "peak_momentum": 0.3515527731971093
+    },
+    "SYN_475": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.34643850479676264,
+      "peak_momentum": 0.34643850479676264
+    },
+    "SYN_208": {
+      "entry_timestamp": "2026-03-30",
+      "entry_momentum": 0.3443311527612005,
+      "peak_momentum": 0.3443311527612005
+    }
+  }
+}

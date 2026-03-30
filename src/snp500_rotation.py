@@ -31,6 +31,7 @@ def build_sp500_data(
     output_csv: str,
     years: int = 20,
     min_columns: int = 300,
+    force_refresh: bool = False,
 ) -> dict:
     """
     Build local S&P500-style price data for the most recent `years`.
@@ -45,11 +46,14 @@ def build_sp500_data(
     start_date = end_date - pd.DateOffset(years=years)
     prices = None
 
-    try:
-        utils.download_data(output_csv)
+    if not force_refresh and os.path.exists(output_csv):
         prices = pd.read_csv(output_csv, index_col=0, parse_dates=True).sort_index()
-    except Exception as exc:
-        fallback_reason = str(exc)
+    else:
+        try:
+            utils.download_data(output_csv)
+            prices = pd.read_csv(output_csv, index_col=0, parse_dates=True).sort_index()
+        except Exception as exc:
+            fallback_reason = str(exc)
 
     if prices is None or prices.empty:
         source = "synthetic_factor_model"
@@ -95,11 +99,33 @@ def _compute_momentum(
     skip_days: int,
 ) -> pd.Series:
     log_returns = np.log(prices).diff().dropna(how="all")
+    idx_tz = getattr(log_returns.index, "tz", None)
+    if idx_tz is not None and getattr(as_of, "tzinfo", None) is None:
+        as_of = as_of.tz_localize(idx_tz)
+    elif idx_tz is None and getattr(as_of, "tzinfo", None) is not None:
+        as_of = as_of.tz_localize(None)
     hist = log_returns.loc[:as_of]
     if len(hist) < lookback_days + skip_days + 5:
-        raise ValueError("Not enough history for momentum calculation.")
+        return pd.Series(dtype=float)
     win = hist.iloc[-(lookback_days + skip_days) : -skip_days]
     return win.sum(axis=0).replace([np.inf, -np.inf], np.nan).dropna()
+
+
+def _to_naive_timestamp(ts) -> pd.Timestamp:
+    t = pd.Timestamp(ts)
+    return t.tz_localize(None) if t.tzinfo is not None else t
+
+
+def _normalize_timestamp_for_index(ts, index) -> pd.Timestamp:
+    t = pd.Timestamp(ts)
+    idx_tz = getattr(index, "tz", None)
+    if idx_tz is not None:
+        if t.tzinfo is None:
+            return t.tz_localize(idx_tz)
+        return t.tz_convert(idx_tz)
+    if t.tzinfo is not None:
+        return t.tz_localize(None)
+    return t
 
 
 def _least_correlated_candidate(
@@ -141,12 +167,22 @@ def run_rotation_backtest(
         raise ValueError("Insufficient history for backtest.")
 
     first_date = rebalance_dates[0]
-    first_mom = _compute_momentum(
-        prices,
-        first_date,
-        config.momentum_lookback_days,
-        config.momentum_skip_days,
-    ).sort_values(ascending=False)
+    first_mom = pd.Series(dtype=float)
+    first_idx = 0
+    for i, dt in enumerate(rebalance_dates):
+        candidate = _compute_momentum(
+            prices,
+            dt,
+            config.momentum_lookback_days,
+            config.momentum_skip_days,
+        )
+        if not candidate.empty:
+            first_mom = candidate.sort_values(ascending=False)
+            first_date = dt
+            first_idx = i
+            break
+    if first_mom.empty:
+        raise ValueError("Not enough history to initialize holdings.")
     holdings = first_mom.head(config.holdings_count).index.tolist()
 
     entry_state = {
@@ -161,7 +197,7 @@ def run_rotation_backtest(
     daily_portfolio_returns = []
     prev_date = first_date
 
-    for as_of in rebalance_dates[1:]:
+    for as_of in rebalance_dates[first_idx + 1 :]:
         # Portfolio return since previous check (equal-weight over held names)
         ret_slice = prices.loc[prev_date:as_of, holdings].pct_change().dropna(how="all")
         if not ret_slice.empty:
@@ -170,6 +206,9 @@ def run_rotation_backtest(
         momentum = _compute_momentum(
             prices, as_of, config.momentum_lookback_days, config.momentum_skip_days
         )
+        if momentum.empty:
+            prev_date = as_of
+            continue
         momentum = momentum.sort_values(ascending=False)
         corr_returns = np.log(
             prices[prices.columns.intersection(momentum.index)]
@@ -326,7 +365,7 @@ def generate_live_recommendation(
         cur = float(momentum[sym])
         st = entry_state[sym]
         st["peak_momentum"] = max(float(st.get("peak_momentum", cur)), cur)
-        entry_ts = pd.Timestamp(st["entry_timestamp"])
+        entry_ts = _normalize_timestamp_for_index(st["entry_timestamp"], prices.index)
         hold_days = int((as_of - entry_ts).days)
         threshold = float(st["peak_momentum"]) * (1 - config.significant_momentum_drop)
         if hold_days < config.min_hold_days or cur >= threshold:

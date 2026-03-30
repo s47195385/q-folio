@@ -1,0 +1,371 @@
+{
+  "config": {
+    "years": 20,
+    "holdings_count": 30,
+    "momentum_lookback_days": 252,
+    "momentum_skip_days": 21,
+    "correlation_lookback_days": 126,
+    "significant_momentum_drop": 0.35,
+    "min_hold_days": 30,
+    "refresh_interval_hours": 4
+  },
+  "data": {
+    "csv": "/home/runner/work/q-folio/q-folio/data/stock_data/sp500_20y.csv",
+    "rows": 5218,
+    "columns": 500,
+    "start": "2006-03-30",
+    "end": "2026-03-30"
+  },
+  "performance": {
+    "total_return": 0.4234429704514533,
+    "annualized_return": 0.018193057130523993,
+    "annualized_volatility": 0.11974360464900971,
+    "sharpe": 0.15193343464021442,
+    "max_drawdown": -0.46565328659171845,
+    "rebalance_events": 949
+  },
+  "final_holdings": [
+    "SYN_349",
+    "SYN_142",
+    "SYN_451",
+    "SYN_394",
+    "SYN_333",
+    "SYN_109",
+    "SYN_492",
+    "SYN_304",
+    "SYN_408",
+    "SYN_201",
+    "SYN_488",
+    "SYN_219",
+    "SYN_052",
+    "SYN_205",
+    "SYN_172",
+    "SYN_305",
+    "SYN_482",
+    "SYN_372",
+    "SYN_389",
+    "SYN_309",
+    "SYN_123",
+    "SYN_234",
+    "SYN_371",
+    "SYN_041",
+    "SYN_125",
+    "SYN_411",
+    "SYN_334",
+    "SYN_194",
+    "SYN_091",
+    "SYN_275"
+  ],
+  "recent_actions": [
+    {
+      "date": "2025-11-06",
+      "drop": [
+        "SYN_389",
+        "SYN_304",
+        "SYN_177",
+        "SYN_139"
+      ],
+      "add": [
+        "SYN_389",
+        "SYN_177",
+        "SYN_304",
+        "SYN_091"
+      ]
+    },
+    {
+      "date": "2025-11-13",
+      "drop": [
+        "SYN_170",
+        "SYN_492",
+        "SYN_062"
+      ],
+      "add": [
+        "SYN_170",
+        "SYN_492",
+        "SYN_062"
+      ]
+    },
+    {
+      "date": "2025-11-20",
+      "drop": [
+        "SYN_305",
+        "SYN_194",
+        "SYN_219"
+      ],
+      "add": [
+        "SYN_219",
+        "SYN_305",
+        "SYN_057"
+      ]
+    },
+    {
+      "date": "2025-11-27",
+      "drop": [
+        "SYN_041"
+      ],
+      "add": [
+        "SYN_041"
+      ]
+    },
+    {
+      "date": "2025-12-04",
+      "drop": [
+        "SYN_269"
+      ],
+      "add": [
+        "SYN_269"
+      ]
+    },
+    {
+      "date": "2025-12-11",
+      "drop": [
+        "SYN_130",
+        "SYN_336",
+        "SYN_017",
+        "SYN_350",
+        "SYN_309",
+        "SYN_372",
+        "SYN_177",
+        "SYN_304",
+        "SYN_091"
+      ],
+      "add": [
+        "SYN_123",
+        "SYN_464",
+        "SYN_309",
+        "SYN_488",
+        "SYN_446",
+        "SYN_194",
+        "SYN_288",
+        "SYN_017",
+        "SYN_270"
+      ]
+    },
+    {
+      "date": "2025-12-18",
+      "drop": [
+        "SYN_142",
+        "SYN_389",
+        "SYN_492",
+        "SYN_062"
+      ],
+      "add": [
+        "SYN_492",
+        "SYN_389",
+        "SYN_142",
+        "SYN_062"
+      ]
+    },
+    {
+      "date": "2025-12-25",
+      "drop": [
+        "SYN_038",
+        "SYN_387",
+        "SYN_363",
+        "SYN_028",
+        "SYN_234",
+        "SYN_219",
+        "SYN_305",
+        "SYN_057"
+      ],
+      "add": [
+        "SYN_219",
+        "SYN_234",
+        "SYN_052",
+        "SYN_202",
+        "SYN_363",
+        "SYN_305",
+        "SYN_102",
+        "SYN_372"
+      ]
+    },
+    {
+      "date": "2026-01-01",
+      "drop": [
+        "SYN_041"
+      ],
+      "add": [
+        "SYN_041"
+      ]
+    },
+    {
+      "date": "2026-01-08",
+      "drop": [
+        "SYN_170",
+        "SYN_269"
+      ],
+      "add": [
+        "SYN_269",
+        "SYN_170"
+      ]
+    },
+    {
+      "date": "2026-01-15",
+      "drop": [
+        "SYN_109",
+        "SYN_464",
+        "SYN_309",
+        "SYN_488",
+        "SYN_446",
+        "SYN_194",
+        "SYN_288"
+      ],
+      "add": [
+        "SYN_109",
+        "SYN_194",
+        "SYN_205",
+        "SYN_308",
+        "SYN_408",
+        "SYN_288",
+        "SYN_309"
+      ]
+    },
+    {
+      "date": "2026-01-29",
+      "drop": [
+        "SYN_017",
+        "SYN_219",
+        "SYN_052",
+        "SYN_202",
+        "SYN_305",
+        "SYN_372"
+      ],
+      "add": [
+        "SYN_219",
+        "SYN_052",
+        "SYN_488",
+        "SYN_305",
+        "SYN_372",
+        "SYN_482"
+      ]
+    },
+    {
+      "date": "2026-02-05",
+      "drop": [
+        "SYN_389"
+      ],
+      "add": [
+        "SYN_389"
+      ]
+    },
+    {
+      "date": "2026-02-12",
+      "drop": [
+        "SYN_238",
+        "SYN_062",
+        "SYN_363",
+        "SYN_041",
+        "SYN_269"
+      ],
+      "add": [
+        "SYN_041",
+        "SYN_269",
+        "SYN_125",
+        "SYN_057",
+        "SYN_451"
+      ]
+    },
+    {
+      "date": "2026-02-19",
+      "drop": [
+        "SYN_394",
+        "SYN_227",
+        "SYN_194",
+        "SYN_288",
+        "SYN_309"
+      ],
+      "add": [
+        "SYN_194",
+        "SYN_394",
+        "SYN_098",
+        "SYN_333",
+        "SYN_159"
+      ]
+    },
+    {
+      "date": "2026-02-26",
+      "drop": [
+        "SYN_492",
+        "SYN_102",
+        "SYN_109",
+        "SYN_308",
+        "SYN_408"
+      ],
+      "add": [
+        "SYN_109",
+        "SYN_492",
+        "SYN_304",
+        "SYN_408",
+        "SYN_201"
+      ]
+    },
+    {
+      "date": "2026-03-05",
+      "drop": [
+        "SYN_270",
+        "SYN_205",
+        "SYN_219",
+        "SYN_052",
+        "SYN_488",
+        "SYN_305",
+        "SYN_372",
+        "SYN_482"
+      ],
+      "add": [
+        "SYN_488",
+        "SYN_219",
+        "SYN_052",
+        "SYN_205",
+        "SYN_172",
+        "SYN_305",
+        "SYN_482",
+        "SYN_372"
+      ]
+    },
+    {
+      "date": "2026-03-12",
+      "drop": [
+        "SYN_371",
+        "SYN_123",
+        "SYN_234",
+        "SYN_170",
+        "SYN_389"
+      ],
+      "add": [
+        "SYN_389",
+        "SYN_309",
+        "SYN_123",
+        "SYN_234",
+        "SYN_371"
+      ]
+    },
+    {
+      "date": "2026-03-19",
+      "drop": [
+        "SYN_041",
+        "SYN_269",
+        "SYN_125",
+        "SYN_057"
+      ],
+      "add": [
+        "SYN_041",
+        "SYN_125",
+        "SYN_411",
+        "SYN_334"
+      ]
+    },
+    {
+      "date": "2026-03-26",
+      "drop": [
+        "SYN_194",
+        "SYN_098",
+        "SYN_159"
+      ],
+      "add": [
+        "SYN_194",
+        "SYN_091",
+        "SYN_275"
+      ]
+    }
+  ]
+}
