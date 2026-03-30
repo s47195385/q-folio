@@ -22,14 +22,21 @@ from typing import Optional
 import cvxpy as cp
 import numpy as np
 import pandas as pd
-from cuopt.linear_programming.problem import (
-    CONTINUOUS,
-    INTEGER,
-    MAXIMIZE,
-    MINIMIZE,
-    Problem,
-)
-from cuopt.linear_programming.solver_settings import SolverSettings
+
+try:
+    from cuopt.linear_programming.problem import (
+        CONTINUOUS,
+        INTEGER,
+        MAXIMIZE,
+        MINIMIZE,
+        Problem,
+    )
+    from cuopt.linear_programming.solver_settings import SolverSettings
+
+    _CUOPT_AVAILABLE = True
+except ImportError:
+    CONTINUOUS = INTEGER = MAXIMIZE = MINIMIZE = Problem = SolverSettings = None
+    _CUOPT_AVAILABLE = False
 
 from . import base_optimizer
 from . import cvar_utils
@@ -217,6 +224,12 @@ class CVaR(base_optimizer.BaseOptimizer):
         api = api_settings.get("api")
         if api not in valid_apis:
             raise ValueError(f"Invalid API '{api}'. Must be one of {valid_apis}")
+
+        if api == "cuopt_python" and not _CUOPT_AVAILABLE:
+            raise ValueError(
+                "cuOpt Python API is not available in this environment. "
+                "Install cuopt dependencies or use api='cvxpy'."
+            )
 
         # Validate constraint types (only for CVXPY)
         if api == "cvxpy":

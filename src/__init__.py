@@ -19,5 +19,12 @@ version = "1.0.0"
 
 from .cvar_data import CvarData
 from .cvar_parameters import CvarParameters
+from .mac_gpu_wrapper import run_mac_compatible_demo, select_compute_backend
 
-__all__ = ["CvarData", "CvarParameters", "version"]
+__all__ = [
+    "CvarData",
+    "CvarParameters",
+    "run_mac_compatible_demo",
+    "select_compute_backend",
+    "version",
+]
