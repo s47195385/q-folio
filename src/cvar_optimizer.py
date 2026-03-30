@@ -38,8 +38,7 @@ except ImportError:
     CONTINUOUS = INTEGER = MAXIMIZE = MINIMIZE = Problem = SolverSettings = None
     _CUOPT_AVAILABLE = False
 
-from . import base_optimizer
-from . import cvar_utils
+from . import base_optimizer, cvar_utils
 from .cvar_parameters import CvarParameters
 from .portfolio import Portfolio
 
@@ -961,7 +960,12 @@ class CVaR(base_optimizer.BaseOptimizer):
 
         self.optimization_problem.solve(**solver_settings)
         weights = self.w.value
-        cash = self.c.value
+        cash_value = self.c.value
+        cash = (
+            float(np.asarray(cash_value).reshape(-1)[0])
+            if np.asarray(cash_value).size > 0
+            else 0.0
+        )
 
         solver_stats = getattr(self.optimization_problem, "solver_stats", None)
 

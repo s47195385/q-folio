@@ -6,13 +6,13 @@ This module provides:
 2) A demo runner for a 4-year S&P 500-style momentum + low-correlation strategy.
 """
 
+import os
 import time
 from dataclasses import dataclass
 
 import cvxpy as cp
 import numpy as np
 import pandas as pd
-import os
 
 from . import backtest, cvar_utils, utils
 from .cvar_optimizer import CVaR
@@ -26,6 +26,152 @@ class ComputeBackend:
     optimizer_api: str
     kde_device: str
     solver_settings: dict
+
+
+def ensure_recent_data_local(
+    dataset_path: str,
+    years: int = 4,
+    min_columns: int = 25,
+) -> dict:
+    """
+    Ensure a local CSV exists with recent multi-asset price history.
+
+    Strategy:
+    - Try full S&P500-like download via existing utility.
+    - Keep only the most recent `years` of observations.
+    - If full download fails, fallback to a liquid large-cap subset.
+    """
+    os.makedirs(os.path.dirname(dataset_path), exist_ok=True)
+    end_date = pd.Timestamp.utcnow().normalize()
+    start_date = end_date - pd.DateOffset(years=years)
+
+    source = "utils.download_data"
+    error_message = None
+    prices = None
+    try:
+        utils.download_data(dataset_path)
+        prices = pd.read_csv(dataset_path, index_col=0, parse_dates=True).sort_index()
+    except Exception as exc:
+        error_message = str(exc)
+        source = "fallback_large_cap_subset"
+        tickers = [
+            "AAPL",
+            "MSFT",
+            "NVDA",
+            "AMZN",
+            "META",
+            "GOOGL",
+            "BRK-B",
+            "JPM",
+            "XOM",
+            "UNH",
+            "LLY",
+            "V",
+            "MA",
+            "AVGO",
+            "PG",
+            "COST",
+            "JNJ",
+            "HD",
+            "BAC",
+            "KO",
+            "MRK",
+            "PEP",
+            "ABBV",
+            "ORCL",
+            "AMD",
+            "CRM",
+            "CVX",
+            "WMT",
+            "NFLX",
+            "ADBE",
+            "TMO",
+            "MCD",
+            "LIN",
+            "CSCO",
+            "ACN",
+            "DHR",
+            "QCOM",
+            "ABT",
+            "INTU",
+            "IBM",
+            "TXN",
+            "NKE",
+            "PM",
+            "HON",
+            "UNP",
+            "AMGN",
+            "RTX",
+            "GS",
+            "SPGI",
+            "CAT",
+        ]
+        df = utils.yf.download(
+            tickers,
+            start=start_date.strftime("%Y-%m-%d"),
+            end=end_date.strftime("%Y-%m-%d"),
+            auto_adjust=False,
+            timeout=30,
+            progress=False,
+        )
+        if isinstance(df, pd.DataFrame) and not df.empty:
+            if isinstance(df.columns, pd.MultiIndex):
+                prices = df["Close"].dropna(axis=1)
+            elif "Close" in df.columns:
+                prices = df[["Close"]].rename(columns={"Close": tickers[0]})
+            else:
+                prices = df
+
+    def _is_valid_prices(df: pd.DataFrame) -> bool:
+        return (
+            isinstance(df, pd.DataFrame)
+            and not df.empty
+            and isinstance(df.index, pd.DatetimeIndex)
+            and df.shape[1] >= min_columns
+        )
+
+    if prices is None or not _is_valid_prices(prices):
+        source = "synthetic_factor_model"
+        business_days = pd.bdate_range(start=start_date, end=end_date)
+        n_days = len(business_days)
+        n_assets = max(min_columns, 50)
+        rng = np.random.default_rng(42)
+
+        market = rng.normal(loc=0.0003, scale=0.01, size=n_days)
+        sector_1 = rng.normal(loc=0.0, scale=0.007, size=n_days)
+        sector_2 = rng.normal(loc=0.0, scale=0.007, size=n_days)
+        idio = rng.normal(loc=0.0, scale=0.012, size=(n_days, n_assets))
+
+        beta_m = rng.uniform(0.7, 1.3, size=n_assets)
+        beta_s1 = rng.uniform(-0.4, 0.8, size=n_assets)
+        beta_s2 = rng.uniform(-0.4, 0.8, size=n_assets)
+        rets = (
+            market[:, None] * beta_m[None, :]
+            + sector_1[:, None] * beta_s1[None, :]
+            + sector_2[:, None] * beta_s2[None, :]
+            + idio
+        )
+        prices_np = 100.0 * np.exp(np.cumsum(rets, axis=0))
+        synthetic_cols = [f"SYN_{i:03d}" for i in range(n_assets)]
+        prices = pd.DataFrame(prices_np, index=business_days, columns=synthetic_cols)
+
+    prices = prices.loc[start_date:end_date].dropna(axis=1)
+    if prices.shape[1] < min_columns:
+        raise ValueError(
+            f"Downloaded data has only {prices.shape[1]} usable tickers, "
+            f"below required minimum {min_columns}."
+        )
+
+    prices.to_csv(dataset_path)
+    return {
+        "dataset_path": dataset_path,
+        "source": source,
+        "rows": int(prices.shape[0]),
+        "columns": int(prices.shape[1]),
+        "start": prices.index.min().strftime("%Y-%m-%d"),
+        "end": prices.index.max().strftime("%Y-%m-%d"),
+        "fallback_reason": error_message,
+    }
 
 
 def select_compute_backend(prefer_gpu: bool = True) -> ComputeBackend:
@@ -120,6 +266,7 @@ def run_mac_compatible_demo(
     backend = select_compute_backend(prefer_gpu=prefer_gpu)
     warnings = []
 
+    data_info = ensure_recent_data_local(dataset_path=dataset_path, years=years)
     price_df = pd.read_csv(dataset_path, index_col=0, parse_dates=True).sort_index()
     price_df = price_df.dropna(axis=1)
     if price_df.empty:
@@ -160,16 +307,22 @@ def run_mac_compatible_demo(
         },
     }
 
-    returns_dict = utils.calculate_returns(sample_prices, regime, returns_compute_settings)
+    returns_dict = utils.calculate_returns(
+        sample_prices, regime, returns_compute_settings
+    )
     try:
-        returns_dict = cvar_utils.generate_cvar_data(returns_dict, scenario_generation_settings)
+        returns_dict = cvar_utils.generate_cvar_data(
+            returns_dict, scenario_generation_settings
+        )
     except Exception as exc:
         warnings.append(
             f"KDE generation on {backend.kde_device} failed: {exc}. "
             "Falling back to gaussian."
         )
         scenario_generation_settings["fit_type"] = "gaussian"
-        returns_dict = cvar_utils.generate_cvar_data(returns_dict, scenario_generation_settings)
+        returns_dict = cvar_utils.generate_cvar_data(
+            returns_dict, scenario_generation_settings
+        )
 
     cvar_params = CvarParameters(
         w_min=0.0,
@@ -179,7 +332,7 @@ def run_mac_compatible_demo(
         L_tar=1.0,
         confidence=0.95,
         risk_aversion=1.0,
-        cardinality=min(max_assets, len(selected)),
+        cardinality=None,
     )
 
     api_settings = {
@@ -187,7 +340,9 @@ def run_mac_compatible_demo(
         "weight_constraints_type": "bounds",
         "cash_constraints_type": "bounds",
     }
-    optimizer = CVaR(returns_dict=returns_dict, cvar_params=cvar_params, api_settings=api_settings)
+    optimizer = CVaR(
+        returns_dict=returns_dict, cvar_params=cvar_params, api_settings=api_settings
+    )
 
     solve_start = time.perf_counter()
     result_row, optimal_portfolio = optimizer.solve_optimization_problem(
@@ -212,6 +367,7 @@ def run_mac_compatible_demo(
         )
 
     report = {
+        "data_info": data_info,
         "backend": backend.name,
         "optimizer_api": backend.optimizer_api,
         "kde_device": backend.kde_device,
